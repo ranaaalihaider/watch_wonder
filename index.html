@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watch Wonder — Premium Watches Pakistan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --surface: #111111;
+    --card: #141414;
+    --border: #222;
+    --neon: #c8ff00;
+    --neon2: #ff3cac;
+    --gold: #f5c842;
+    --text: #f0f0f0;
+    --muted: #666;
+    --dim: #333;
+    --radius: 16px;
+    --glow: 0 0 24px rgba(200,255,0,0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 4px; }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: .5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    color: var(--neon);
+    text-shadow: var(--glow);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--text); }
+
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
+  .nav-ig {
+    display: flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+    color: #fff; font-size: .75rem; font-weight: 600;
+    padding: 7px 14px; border-radius: 50px;
+    text-decoration: none; letter-spacing: .5px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .nav-ig:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(253,29,29,.4); }
+
+  .nav-badge {
+    background: var(--neon); color: #000;
+    font-size: .65rem; font-weight: 700;
+    padding: 4px 10px; border-radius: 50px;
+    letter-spacing: 1px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100svh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 100px 20px 60px;
+    position: relative; overflow: hidden; text-align: center;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 20%, rgba(200,255,0,.08) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255,60,172,.06) 0%, transparent 60%);
+  }
+
+  .hero-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem; font-weight: 500;
+    letter-spacing: 3px; color: var(--neon);
+    background: rgba(200,255,0,.08);
+    border: 1px solid rgba(200,255,0,.2);
+    padding: 6px 16px; border-radius: 50px;
+    margin-bottom: 28px;
+    animation: fadeUp .8s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 14vw, 7rem);
+    line-height: .95; letter-spacing: 1px;
+    animation: fadeUp .8s .15s ease both;
+  }
+
+  .hero h1 .accent { color: var(--neon); text-shadow: var(--glow); }
+  .hero h1 .dim { color: var(--muted); }
+
+  .hero-sub {
+    font-size: .95rem; color: var(--muted); max-width: 340px;
+    line-height: 1.6; margin: 20px auto 36px;
+    animation: fadeUp .8s .3s ease both;
+  }
+
+  .hero-cta {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp .8s .45s ease both;
+  }
+
+  .btn-primary {
+    background: var(--neon); color: #000;
+    font-weight: 700; font-size: .9rem;
+    padding: 14px 32px; border-radius: 50px;
+    text-decoration: none; letter-spacing: .5px;
+    transition: transform .2s, box-shadow .2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(200,255,0,.4); }
+
+  .btn-ghost {
+    border: 1px solid var(--dim); color: var(--text);
+    font-weight: 500; font-size: .9rem;
+    padding: 14px 28px; border-radius: 50px;
+    text-decoration: none; letter-spacing: .5px;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-ghost:hover { border-color: var(--neon); color: var(--neon); }
+
+  .hero-stats {
+    display: flex; gap: 32px; justify-content: center;
+    margin-top: 56px;
+    animation: fadeUp .8s .6s ease both;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; color: var(--neon); line-height: 1;
+  }
+  .stat-label { font-size: .72rem; color: var(--muted); letter-spacing: 1px; margin-top: 4px; }
+
+  .scroll-hint {
+    position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    color: var(--muted); font-size: .7rem; letter-spacing: 2px;
+    animation: bounce 2s infinite;
+  }
+  .scroll-hint svg { width: 18px; opacity: .5; }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 12px 0;
+  }
+  .ticker {
+    display: flex; gap: 0;
+    animation: ticker 18s linear infinite;
+    width: max-content;
+  }
+  .ticker-item {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'DM Mono', monospace; font-size: .72rem;
+    color: var(--muted); padding: 0 32px; white-space: nowrap;
+  }
+  .ticker-item .dot { color: var(--neon); font-size: 1rem; }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 70px 20px; }
+  .section-label {
+    font-family: 'DM Mono', monospace; font-size: .7rem;
+    letter-spacing: 3px; color: var(--neon); margin-bottom: 12px;
+    display: block;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.2rem, 8vw, 3.5rem);
+    line-height: 1; margin-bottom: 8px;
+  }
+  .section-sub { color: var(--muted); font-size: .9rem; line-height: 1.6; max-width: 420px; }
+
+  /* ── PRODUCTS ── */
+  .products { background: var(--bg); }
+  .products-header { margin-bottom: 36px; }
+
+  .filter-tabs {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px;
+  }
+  .tab {
+    font-size: .75rem; font-weight: 600; letter-spacing: 1px;
+    padding: 7px 18px; border-radius: 50px;
+    border: 1px solid var(--dim); color: var(--muted);
+    background: none; cursor: pointer;
+    transition: all .2s; text-transform: uppercase;
+  }
+  .tab.active, .tab:hover {
+    background: var(--neon); color: #000;
+    border-color: var(--neon);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 16px; margin-top: 28px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform .3s, border-color .3s, box-shadow .3s;
+    position: relative;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(200,255,0,.3);
+    box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(200,255,0,.1);
+  }
+
+  .card-badge {
+    position: absolute; top: 14px; left: 14px; z-index: 2;
+    background: var(--neon2); color: #fff;
+    font-size: .65rem; font-weight: 700;
+    padding: 4px 10px; border-radius: 50px; letter-spacing: 1px;
+  }
+
+  .card-badge.new { background: var(--neon); color: #000; }
+  .card-badge.hot { background: #ff5722; }
+
+  .card-img {
+    width: 100%; aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    background: var(--surface);
+    position: relative; overflow: hidden;
+  }
+
+  /* Watch image placeholders using CSS art */
+  .watch-visual {
+    width: 100%; aspect-ratio: 1/1;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+    position: relative; overflow: hidden;
+  }
+
+  .watch-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 60% 30%, rgba(200,255,0,.06), transparent 60%);
+  }
+
+  .watch-svg { width: 65%; max-width: 180px; filter: drop-shadow(0 8px 32px rgba(0,0,0,.8)); }
+
+  .card-body { padding: 18px; }
+
+  .card-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: .65rem; letter-spacing: 2px;
+    color: var(--neon); margin-bottom: 6px;
+  }
+
+  .card-name {
+    font-weight: 700; font-size: 1rem;
+    line-height: 1.3; margin-bottom: 4px;
+  }
+
+  .card-desc {
+    font-size: .8rem; color: var(--muted);
+    line-height: 1.5; margin-bottom: 16px;
+  }
+
+  .card-pricing {
+    display: flex; align-items: flex-end; gap: 10px; margin-bottom: 16px;
+  }
+
+  .price-now {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; color: var(--neon); line-height: 1;
+  }
+
+  .price-was {
+    font-size: .85rem; color: var(--muted);
+    text-decoration: line-through; padding-bottom: 2px;
+  }
+
+  .price-save {
+    background: rgba(200,255,0,.1);
+    border: 1px solid rgba(200,255,0,.2);
+    color: var(--neon); font-size: .65rem;
+    font-weight: 700; padding: 3px 8px;
+    border-radius: 50px; margin-left: auto;
+    align-self: center;
+  }
+
+  .card-meta {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+
+  .meta-chip {
+    font-size: .65rem; letter-spacing: .5px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 50px;
+    color: var(--muted);
+  }
+
+  .card-actions { display: flex; gap: 8px; }
+
+  .btn-buy {
+    flex: 1; background: var(--neon); color: #000;
+    font-weight: 700; font-size: .85rem;
+    padding: 12px; border-radius: 50px;
+    border: none; cursor: pointer;
+    text-decoration: none; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-buy:hover { transform: scale(1.03); box-shadow: 0 6px 24px rgba(200,255,0,.35); }
+
+  .btn-wish {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid var(--border);
+    background: none; cursor: pointer; color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; transition: all .2s; flex-shrink: 0;
+  }
+  .btn-wish:hover { border-color: var(--neon2); color: var(--neon2); }
+  .btn-wish.liked { border-color: var(--neon2); color: var(--neon2); }
+
+  /* ── OFFER BANNER ── */
+  .offer-banner {
+    background: var(--neon);
+    padding: 28px 20px; text-align: center;
+  }
+
+  .offer-banner h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.8rem, 7vw, 3rem);
+    color: #000; line-height: 1;
+  }
+
+  .offer-banner p {
+    color: rgba(0,0,0,.6); font-size: .85rem; margin-top: 6px;
+  }
+
+  .offer-banner a {
+    display: inline-block; margin-top: 16px;
+    background: #000; color: var(--neon);
+    font-weight: 700; padding: 12px 28px;
+    border-radius: 50px; text-decoration: none;
+    font-size: .85rem; letter-spacing: .5px;
+    transition: transform .2s;
+  }
+  .offer-banner a:hover { transform: scale(1.05); }
+
+  /* ── WHY US ── */
+  .why { background: var(--surface); }
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 16px; margin-top: 36px;
+  }
+  .why-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px 20px;
+    transition: border-color .3s;
+  }
+  .why-card:hover { border-color: rgba(200,255,0,.3); }
+  .why-icon {
+    font-size: 2rem; margin-bottom: 14px;
+    display: block;
+  }
+  .why-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .why-card p { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── TESTIMONIALS ── */
+  .reviews { background: var(--bg); }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 14px; margin-top: 36px;
+  }
+  .review-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px 18px;
+  }
+  .review-stars { color: var(--gold); font-size: 1rem; margin-bottom: 12px; letter-spacing: 2px; }
+  .review-text { font-size: .85rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; font-style: italic; }
+  .review-author { display: flex; align-items: center; gap: 10px; }
+  .review-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--neon), var(--neon2));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .8rem; color: #000; flex-shrink: 0;
+  }
+  .review-name { font-size: .85rem; font-weight: 600; }
+  .review-loc { font-size: .72rem; color: var(--muted); }
+
+  /* ── HOW TO BUY ── */
+  .how { background: var(--surface); }
+  .steps {
+    display: flex; flex-direction: column; gap: 0;
+    margin-top: 36px; max-width: 500px;
+  }
+  .step {
+    display: flex; gap: 20px; align-items: flex-start;
+    padding: 24px 0; border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem; color: var(--neon); line-height: 1;
+    opacity: .4; min-width: 48px;
+  }
+  .step h3 { font-size: .95rem; font-weight: 700; margin-bottom: 4px; }
+  .step p { font-size: .82rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── INSTAGRAM CTA ── */
+  .ig-cta {
+    padding: 70px 20px; text-align: center;
+    background: var(--bg);
+    position: relative; overflow: hidden;
+  }
+  .ig-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(255,60,172,.07), transparent 70%);
+  }
+  .ig-cta h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2rem, 9vw, 4rem);
+    margin-bottom: 12px;
+  }
+  .ig-cta p { color: var(--muted); font-size: .9rem; margin-bottom: 28px; max-width: 340px; margin-left: auto; margin-right: auto; }
+  .btn-ig-big {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+    color: #fff; font-weight: 700; font-size: 1rem;
+    padding: 16px 36px; border-radius: 50px;
+    text-decoration: none; letter-spacing: .5px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-ig-big:hover { transform: scale(1.04); box-shadow: 0 8px 32px rgba(253,29,29,.4); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 48px 20px 32px;
+  }
+  .footer-top {
+    display: flex; flex-direction: column; gap: 32px; margin-bottom: 40px;
+  }
+  .footer-brand .nav-logo { font-size: 2rem; display: block; margin-bottom: 10px; }
+  .footer-brand p { font-size: .82rem; color: var(--muted); line-height: 1.6; max-width: 280px; }
+  .footer-links h4 {
+    font-size: .75rem; letter-spacing: 2px; color: var(--neon);
+    margin-bottom: 14px; font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+  }
+  .footer-links ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-links ul li a {
+    color: var(--muted); text-decoration: none;
+    font-size: .85rem; transition: color .2s;
+  }
+  .footer-links ul li a:hover { color: var(--neon); }
+  .footer-bottom {
+    display: flex; flex-direction: column; gap: 8px;
+    border-top: 1px solid var(--border); padding-top: 24px;
+    font-size: .75rem; color: var(--muted);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(200,255,0,.4); }
+    70% { box-shadow: 0 0 0 12px rgba(200,255,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(200,255,0,0); }
+  }
+
+  /* ── MOBILE ── */
+  @media (min-width: 640px) {
+    .footer-top { flex-direction: row; flex-wrap: wrap; }
+    .footer-brand { flex: 1 1 240px; }
+    .footer-links { flex: 0 0 140px; }
+    .footer-bottom { flex-direction: row; justify-content: space-between; }
+  }
+
+  /* ── FLOATING WHATSAPP ── */
+  .float-ig {
+    position: fixed; bottom: 24px; right: 20px; z-index: 200;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 1.5rem;
+    box-shadow: 0 4px 20px rgba(253,29,29,.5);
+    text-decoration: none;
+    animation: pulse-ring 2.5s infinite;
+    transition: transform .2s;
+  }
+  .float-ig:hover { transform: scale(1.1); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--neon); color: #000; font-weight: 700;
+    font-size: .82rem; padding: 10px 22px; border-radius: 50px;
+    opacity: 0; pointer-events: none;
+    transition: all .3s; z-index: 300; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Watch<span>Wonder</span></a>
+  <div class="nav-right">
+    <span class="nav-badge">🇵🇰 PK</span>
+    <a href="https://www.instagram.com/watchwonders2026/" target="_blank" class="nav-ig">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      Follow
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <span class="hero-tag">⚡ EXCLUSIVE DEALS — PAKISTAN</span>
+  <h1>PREMIUM <span class="accent">WATCHES</span><br><span class="dim">INSANE</span> PRICES</h1>
+  <p class="hero-sub">Luxury timepieces. Street-level prices. No middlemen. Direct from Watch Wonder to your wrist — anywhere in Pakistan.</p>
+  <div class="hero-cta">
+    <a href="#products" class="btn-primary">🔥 Shop Now</a>
+    <a href="https://www.instagram.com/watchwonders2026/" target="_blank" class="btn-ghost">View on Instagram</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Happy Buyers</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">50%</div>
+      <div class="stat-label">Avg Savings</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">🇵🇰</div>
+      <div class="stat-label">PK Delivery</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5 5 5-5"/></svg>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker">
+    <span class="ticker-item"><span class="dot">◆</span> FREE DELIVERY ACROSS PAKISTAN</span>
+    <span class="ticker-item"><span class="dot">◆</span> PREMIUM QUALITY GUARANTEED</span>
+    <span class="ticker-item"><span class="dot">◆</span> PRICES FROM RS 1,000 ONLY</span>
+    <span class="ticker-item"><span class="dot">◆</span> ORIGINAL PRICE RS 3,000+</span>
+    <span class="ticker-item"><span class="dot">◆</span> DM ON INSTAGRAM TO ORDER</span>
+    <span class="ticker-item"><span class="dot">◆</span> LIMITED STOCK AVAILABLE</span>
+    <span class="ticker-item"><span class="dot">◆</span> FREE DELIVERY ACROSS PAKISTAN</span>
+    <span class="ticker-item"><span class="dot">◆</span> PREMIUM QUALITY GUARANTEED</span>
+    <span class="ticker-item"><span class="dot">◆</span> PRICES FROM RS 1,000 ONLY</span>
+    <span class="ticker-item"><span class="dot">◆</span> ORIGINAL PRICE RS 3,000+</span>
+    <span class="ticker-item"><span class="dot">◆</span> DM ON INSTAGRAM TO ORDER</span>
+    <span class="ticker-item"><span class="dot">◆</span> LIMITED STOCK AVAILABLE</span>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="products-header">
+    <span class="section-label">// THIS WEEK'S DROPS</span>
+    <h2 class="section-title">HOT WATCHES<br>ON SALE</h2>
+    <p class="section-sub">Original retail price Rs 3,000 — grab yours for a fraction before stock runs out.</p>
+    <div class="filter-tabs">
+      <button class="tab active" onclick="filterTab(this,'all')">All</button>
+      <button class="tab" onclick="filterTab(this,'sport')">Sport</button>
+      <button class="tab" onclick="filterTab(this,'luxury')">Luxury</button>
+      <button class="tab" onclick="filterTab(this,'casual')">Casual</button>
+    </div>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+
+    <!-- CARD 1 -->
+    <div class="card" data-cat="luxury">
+      <span class="card-badge hot">🔥 HOT</span>
+      <div class="watch-visual">
+        <!-- SVG Watch 1 - Gold Luxury -->
+        <svg class="watch-svg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+          <!-- Strap top -->
+          <rect x="42" y="0" width="36" height="38" rx="6" fill="#2a1f00"/>
+          <rect x="46" y="6" width="28" height="2" rx="1" fill="#5a3d00" opacity=".6"/>
+          <rect x="46" y="12" width="28" height="2" rx="1" fill="#5a3d00" opacity=".6"/>
+          <!-- Case -->
+          <circle cx="60" cy="80" r="40" fill="#1a1200"/>
+          <circle cx="60" cy="80" r="40" fill="url(#g1)" opacity=".9"/>
+          <!-- Bezel -->
+          <circle cx="60" cy="80" r="38" fill="none" stroke="#f5c842" stroke-width="5"/>
+          <!-- Dial -->
+          <circle cx="60" cy="80" r="30" fill="#0d0b00"/>
+          <circle cx="60" cy="80" r="28" fill="url(#d1)"/>
+          <!-- Hour markers -->
+          <line x1="60" y1="54" x2="60" y2="59" stroke="#f5c842" stroke-width="2"/>
+          <line x1="60" y1="101" x2="60" y2="106" stroke="#f5c842" stroke-width="2"/>
+          <line x1="34" y1="80" x2="39" y2="80" stroke="#f5c842" stroke-width="2"/>
+          <line x1="81" y1="80" x2="86" y2="80" stroke="#f5c842" stroke-width="2"/>
+          <!-- Hands -->
+          <line x1="60" y1="80" x2="60" y2="62" stroke="#f5c842" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="74" y2="80" stroke="#f5c842" stroke-width="2" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="52" y2="96" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="60" cy="80" r="3" fill="#f5c842"/>
+          <!-- Crown -->
+          <rect x="98" y="76" width="8" height="8" rx="2" fill="#f5c842"/>
+          <!-- Strap bottom -->
+          <rect x="42" y="118" width="36" height="42" rx="6" fill="#2a1f00"/>
+          <rect x="46" y="140" width="28" height="2" rx="1" fill="#5a3d00" opacity=".6"/>
+          <rect x="46" y="146" width="28" height="2" rx="1" fill="#5a3d00" opacity=".6"/>
+          <!-- Buckle -->
+          <rect x="54" y="132" width="12" height="8" rx="2" fill="#f5c842" opacity=".8"/>
+          <defs>
+            <radialGradient id="g1" cx="35%" cy="30%"><stop offset="0%" stop-color="#f5c842" stop-opacity=".15"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+            <radialGradient id="d1" cx="40%" cy="35%"><stop offset="0%" stop-color="#1e1800"/><stop offset="100%" stop-color="#080600"/></radialGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-brand">WATCH WONDER</div>
+        <div class="card-name">Royal Gold Elite</div>
+        <div class="card-desc">Premium gold-tone dial with sapphire crystal glass. Water resistant. Genuine leather strap.</div>
+        <div class="card-meta">
+          <span class="meta-chip">💧 Water Resist</span>
+          <span class="meta-chip">🔋 Quartz</span>
+          <span class="meta-chip">⌚ 42mm</span>
+        </div>
+        <div class="card-pricing">
+          <div class="price-now">Rs 1,200</div>
+          <div class="price-was">Rs 3,000</div>
+          <div class="price-save">SAVE 60%</div>
+        </div>
+        <div class="card-actions">
+          <a href="https://www.instagram.com/watchwonders2026/" target="_blank" class="btn-buy">🛒 Buy Now</a>
+          <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="card" data-cat="sport">
+      <span class="card-badge new">✨ NEW</span>
+      <div class="watch-visual">
+        <!-- SVG Watch 2 - Sport Neon -->
+        <svg class="watch-svg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="0" width="40" height="38" rx="4" fill="#0a1200"/>
+          <rect x="44" y="8" width="32" height="2" rx="1" fill="#c8ff00" opacity=".3"/>
+          <rect x="44" y="14" width="32" height="2" rx="1" fill="#c8ff00" opacity=".3"/>
+          <!-- Case octagon -->
+          <polygon points="60,42 88,55 95,80 88,105 60,118 32,105 25,80 32,55" fill="#0d1500"/>
+          <polygon points="60,44 86,56 93,80 86,104 60,116 34,104 27,80 34,56" fill="none" stroke="#c8ff00" stroke-width="3"/>
+          <!-- Dial -->
+          <circle cx="60" cy="80" r="26" fill="#060d00"/>
+          <!-- Tachymeter marks -->
+          <circle cx="60" cy="80" r="24" fill="none" stroke="#c8ff00" stroke-width=".5" stroke-dasharray="2 4"/>
+          <!-- Hands -->
+          <line x1="60" y1="80" x2="60" y2="60" stroke="#c8ff00" stroke-width="3" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="78" y2="82" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="50" y2="94" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="60" cy="80" r="3.5" fill="#c8ff00"/>
+          <!-- Sub-dial -->
+          <circle cx="60" cy="96" r="7" fill="#0a1200"/>
+          <line x1="60" y1="96" x2="62" y2="91" stroke="#c8ff00" stroke-width="1"/>
+          <!-- Crown -->
+          <rect x="94" y="76" width="9" height="8" rx="2" fill="#888"/>
+          <!-- Strap bottom -->
+          <rect x="40" y="118" width="40" height="42" rx="4" fill="#0a1200"/>
+          <rect x="44" y="140" width="32" height="2" rx="1" fill="#c8ff00" opacity=".3"/>
+          <rect x="44" y="146" width="32" height="2" rx="1" fill="#c8ff00" opacity=".3"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-brand">WATCH WONDER</div>
+        <div class="card-name">Street Racer Pro</div>
+        <div class="card-desc">Sporty octagon case with neon green accents. Chronograph style. Perfect for active lifestyles.</div>
+        <div class="card-meta">
+          <span class="meta-chip">🏃 Sport</span>
+          <span class="meta-chip">🔋 Quartz</span>
+          <span class="meta-chip">⌚ 45mm</span>
+        </div>
+        <div class="card-pricing">
+          <div class="price-now">Rs 1,000</div>
+          <div class="price-was">Rs 3,000</div>
+          <div class="price-save">SAVE 67%</div>
+        </div>
+        <div class="card-actions">
+          <a href="https://www.instagram.com/watchwonders2026/" target="_blank" class="btn-buy">🛒 Buy Now</a>
+          <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="card" data-cat="luxury">
+      <span class="card-badge" style="background:#7c3aed">💎 PREMIUM</span>
+      <div class="watch-visual">
+        <!-- SVG Watch 3 - Silver Classic -->
+        <svg class="watch-svg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+          <rect x="44" y="0" width="32" height="38" rx="8" fill="#1a1a2e"/>
+          <rect x="48" y="8" width="24" height="1.5" rx="1" fill="#8888ff" opacity=".4"/>
+          <rect x="48" y="12" width="24" height="1.5" rx="1" fill="#8888ff" opacity=".4"/>
+          <rect x="48" y="16" width="24" height="1.5" rx="1" fill="#8888ff" opacity=".4"/>
+          <!-- Case -->
+          <rect x="28" y="55" width="64" height="50" rx="18" fill="#111130"/>
+          <rect x="28" y="55" width="64" height="50" rx="18" fill="none" stroke="url(#sv)" stroke-width="3"/>
+          <!-- Dial -->
+          <rect x="34" y="61" width="52" height="38" rx="14" fill="#060615"/>
+          <!-- Indices -->
+          <line x1="60" y1="64" x2="60" y2="68" stroke="#9090ff" stroke-width="1.5"/>
+          <line x1="60" y1="95" x2="60" y2="99" stroke="#9090ff" stroke-width="1.5"/>
+          <line x1="37" y1="80" x2="41" y2="80" stroke="#9090ff" stroke-width="1.5"/>
+          <line x1="79" y1="80" x2="83" y2="80" stroke="#9090ff" stroke-width="1.5"/>
+          <!-- Date window -->
+          <rect x="68" y="77" width="10" height="7" rx="2" fill="#1e1e4a"/>
+          <text x="73" y="83" font-size="5" fill="#c8ff00" text-anchor="middle" font-family="monospace">21</text>
+          <!-- Hands -->
+          <line x1="60" y1="80" x2="60" y2="67" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="72" y2="80" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="54" y2="91" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="60" cy="80" r="3" fill="#9090ff"/>
+          <!-- Crown -->
+          <rect x="91" y="76" width="8" height="8" rx="2" fill="#555"/>
+          <!-- Strap bottom -->
+          <rect x="44" y="105" width="32" height="55" rx="8" fill="#1a1a2e"/>
+          <defs>
+            <linearGradient id="sv" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#9090ff"/>
+              <stop offset="50%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#6060cc"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-brand">WATCH WONDER</div>
+        <div class="card-name">Midnight Galaxy</div>
+        <div class="card-desc">Deep navy case with silver chrome bezel. Date window. Minimalist luxury for professionals.</div>
+        <div class="card-meta">
+          <span class="meta-chip">📅 Date</span>
+          <span class="meta-chip">🔋 Quartz</span>
+          <span class="meta-chip">⌚ 40mm</span>
+        </div>
+        <div class="card-pricing">
+          <div class="price-now">Rs 1,400</div>
+          <div class="price-was">Rs 3,000</div>
+          <div class="price-save">SAVE 53%</div>
+        </div>
+        <div class="card-actions">
+          <a href="https://www.instagram.com/watchwonders2026/" target="_blank" class="btn-buy">🛒 Buy Now</a>
+          <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="card" data-cat="casual">
+      <span class="card-badge" style="background:#ea580c">⚡ FLASH SALE</span>
+      <div class="watch-visual">
+        <!-- SVG Watch 4 - Rose Gold Casual -->
+        <svg class="watch-svg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+          <rect x="43" y="0" width="34" height="38" rx="10" fill="#1f0a08"/>
+          <rect x="47" y="8" width="26" height="2" rx="1" fill="#e8a090" opacity=".4"/>
+          <rect x="47" y="14" width="26" height="2" rx="1" fill="#e8a090" opacity=".4"/>
+          <!-- Case round -->
+          <circle cx="60" cy="80" r="37" fill="#1a0800"/>
+          <circle cx="60" cy="80" r="37" fill="none" stroke="url(#rg)" stroke-width="4"/>
+          <!-- Inner ring -->
+          <circle cx="60" cy="80" r="32" fill="none" stroke="#3d1a0a" stroke-width="1"/>
+          <!-- Dial -->
+          <circle cx="60" cy="80" r="28" fill="url(#rd)"/>
+          <!-- Flower pattern center -->
+          <circle cx="60" cy="80" r="8" fill="none" stroke="#e8a090" stroke-width=".5" opacity=".3"/>
+          <!-- Hour markers roman-ish dots -->
+          <circle cx="60" cy="55" r="2" fill="#e8a090"/>
+          <circle cx="60" cy="105" r="2" fill="#e8a090"/>
+          <circle cx="35" cy="80" r="2" fill="#e8a090"/>
+          <circle cx="85" cy="80" r="2" fill="#e8a090"/>
+          <circle cx="52" cy="57.4" r="1.5" fill="#e8a090" opacity=".6"/>
+          <circle cx="68" cy="57.4" r="1.5" fill="#e8a090" opacity=".6"/>
+          <!-- Hands -->
+          <line x1="60" y1="80" x2="60" y2="60" stroke="#e8a090" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="76" y2="78" stroke="#e8a090" stroke-width="2" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="50" y2="97" stroke="#ff3cac" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="60" cy="80" r="3.5" fill="#e8a090"/>
+          <!-- Crown -->
+          <rect x="96" y="76" width="8" height="8" rx="3" fill="#e8a090"/>
+          <!-- Strap bottom -->
+          <rect x="43" y="117" width="34" height="43" rx="10" fill="#1f0a08"/>
+          <rect x="47" y="138" width="26" height="2" rx="1" fill="#e8a090" opacity=".4"/>
+          <defs>
+            <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#e8a090"/>
+              <stop offset="50%" stop-color="#ffc8b0"/>
+              <stop offset="100%" stop-color="#b06050"/>
+            </linearGradient>
+            <radialGradient id="rd" cx="40%" cy="35%">
+              <stop offset="0%" stop-color="#1e0c06"/>
+              <stop offset="100%" stop-color="#0d0604"/>
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-brand">WATCH WONDER</div>
+        <div class="card-name">Rose Petal Luxe</div>
+        <div class="card-desc">Elegant rose gold tone case. Slim profile. Timeless design for everyday elegance.</div>
+        <div class="card-meta">
+          <span class="meta-chip">🌹 Rose Gold</span>
+          <span class="meta-chip">🔋 Quartz</span>
+          <span class="meta-chip">⌚ 38mm</span>
+        </div>
+        <div class="card-pricing">
+          <div class="price-now">Rs 1,100</div>
+          <div class="price-was">Rs 3,000</div>
+          <div class="price-save">SAVE 63%</div>
+        </div>
+        <div class="card-actions">
+          <a href="https://www.instagram.com/watchwonders2026/" target="_blank" class="btn-buy">🛒 Buy Now</a>
+          <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 5 -->
+    <div class="card" data-cat="sport">
+      <span class="card-badge new">🆕 JUST IN</span>
+      <div class="watch-visual">
+        <!-- SVG Watch 5 - Black Tactical -->
+        <svg class="watch-svg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="0" width="40" height="38" rx="5" fill="#0f0f0f"/>
+          <rect x="44" y="8" width="32" height="2" rx="1" fill="#555" opacity=".5"/>
+          <rect x="44" y="14" width="32" height="2" rx="1" fill="#555" opacity=".5"/>
+          <!-- Square case -->
+          <rect x="24" y="54" width="72" height="52" rx="10" fill="#0a0a0a"/>
+          <rect x="24" y="54" width="72" height="52" rx="10" fill="none" stroke="#333" stroke-width="3"/>
+          <!-- Edge screws -->
+          <circle cx="30" cy="60" r="2.5" fill="#222"/>
+          <circle cx="90" cy="60" r="2.5" fill="#222"/>
+          <circle cx="30" cy="100" r="2.5" fill="#222"/>
+          <circle cx="90" cy="100" r="2.5" fill="#222"/>
+          <!-- Dial -->
+          <rect x="30" y="60" width="60" height="40" rx="7" fill="#050505"/>
+          <!-- Grid lines faint -->
+          <line x1="60" y1="60" x2="60" y2="100" stroke="#111" stroke-width=".5"/>
+          <line x1="30" y1="80" x2="90" y2="80" stroke="#111" stroke-width=".5"/>
+          <!-- Digital style markers -->
+          <rect x="57" y="62" width="6" height="2" rx="1" fill="#ff3cac" opacity=".8"/>
+          <rect x="57" y="96" width="6" height="2" rx="1" fill="#ff3cac" opacity=".8"/>
+          <rect x="32" y="78" width="2" height="4" rx="1" fill="#ff3cac" opacity=".8"/>
+          <rect x="86" y="78" width="2" height="4" rx="1" fill="#ff3cac" opacity=".8"/>
+          <!-- Hands -->
+          <line x1="60" y1="80" x2="60" y2="66" stroke="#ff3cac" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="75" y2="80" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <line x1="60" y1="80" x2="52" y2="91" stroke="#c8ff00" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="60" cy="80" r="3" fill="#ff3cac"/>
+          <!-- Pushers -->
+          <rect x="95" y="64" width="8" height="5" rx="2" fill="#333"/>
+          <rect x="95" y="74" width="8" height="5" rx="2" fill="#333"/>
+          <rect x="17" y="64" width="8" height="5" rx="2" fill="#333"/>
+          <!-- Strap bottom -->
+          <rect x="40" y="106" width="40" height="54" rx="5" fill="#0f0f0f"/>
+          <rect x="44" y="130" width="32" height="2" rx="1" fill="#555" opacity=".5"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-brand">WATCH WONDER</div>
+        <div class="card-name">Black Ops Tactical</div>
+        <div class="card-desc">Military-inspired square case. Matte black finish. Multi-function sub-dials. Pure street vibes.</div>
+        <div class="card-meta">
+          <span class="meta-chip">🖤 Tactical</span>
+          <span class="meta-chip">🔋 Quartz</span>
+          <span class="meta-chip">⌚ 44mm</span>
+        </div>
+        <div class="card-pricing">
+          <div class="price-now">Rs 1,350</div>
+          <div class="price-was">Rs 3,000</div>
+          <div class="price-save">SAVE 55%</div>
+        </div>
+        <div class="card-actions">
+          <a href="https://www.instagram.com/watchwonders2026/" target="_blank" class="btn-buy">🛒 Buy Now</a>
+          <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- OFFER BANNER -->
+<div class="offer-banner">
+  <h2>🔥 FLASH SALE — UP TO 67% OFF</h2>
+  <p>Limited pieces available. Don't sleep on this. DM us before stock runs out!</p>
+  <a href="https://www.instagram.com/watchwonders2026/" target="_blank">Order via Instagram →</a>
+</div>
+
+<!-- WHY US -->
+<section class="why">
+  <span class="section-label">// WHY WATCH WONDER</span>
+  <h2 class="section-title">THE REAL DEAL</h2>
+  <p class="section-sub">We're not like the rest. Here's why 500+ Pakistanis trust us.</p>
+  <div class="why-grid">
+    <div class="why-card">
+      <span class="why-icon">💸</span>
+      <h3>Lowest Prices</h3>
+      <p>We cut out every middleman. You get premium quality at prices that make sense. Always under Rs 1,500.</p>
+    </div>
+    <div class="why-card">
+      <span class="why-icon">✅</span>
+      <h3>100% Authentic</h3>
+      <p>Every watch we sell is quality-checked. No fakes, no scams. What you see is what you get.</p>
+    </div>
+    <div class="why-card">
+      <span class="why-icon">🚚</span>
+      <h3>Fast Delivery PK</h3>
+      <p>Delivered anywhere in Pakistan. Lahore, Karachi, Islamabad — we ship it all. Cash on delivery available.</p>
+    </div>
+    <div class="why-card">
+      <span class="why-icon">💬</span>
+      <h3>Easy DM to Order</h3>
+      <p>No complicated checkout. Just DM us on Instagram, we sort the rest. Simple as that.</p>
+    </div>
+    <div class="why-card">
+      <span class="why-icon">🔄</span>
+      <h3>Easy Returns</h3>
+      <p>Not satisfied? We offer hassle-free return and exchange within 7 days. No questions asked.</p>
+    </div>
+    <div class="why-card">
+      <span class="why-icon">⚡</span>
+      <h3>New Drops Weekly</h3>
+      <p>Fresh stock every week. Follow our Instagram so you never miss a new drop or flash deal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews">
+  <span class="section-label">// REAL TALK</span>
+  <h2 class="section-title">WHAT THE<br>FAMS SAY</h2>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Bhai ekdum fire hai watch. Quality dekh ke yakeen nahi hua itni kam price mein. Will definitely order again!"</p>
+      <div class="review-author">
+        <div class="review-avatar">AK</div>
+        <div>
+          <div class="review-name">Ahmad Khan</div>
+          <div class="review-loc">📍 Lahore</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Ordered the Black Ops Tactical — it arrived in 2 days! Looks way more expensive than what I paid. 10/10 recommend."</p>
+      <div class="review-author">
+        <div class="review-avatar">SR</div>
+        <div>
+          <div class="review-name">Sara Raza</div>
+          <div class="review-loc">📍 Karachi</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Bought 3 watches as gifts. Everyone loved them. Price toh bata nahi saka kisi ko — they thought it was expensive 😂"</p>
+      <div class="review-author">
+        <div class="review-avatar">MF</div>
+        <div>
+          <div class="review-name">Muneeb Farooq</div>
+          <div class="review-loc">📍 Islamabad</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★☆</div>
+      <p class="review-text">"Rose Petal Luxe ordered for my sis birthday. She absolutely loved it. Fast delivery, nice packaging. Great store."</p>
+      <div class="review-author">
+        <div class="review-avatar">ZA</div>
+        <div>
+          <div class="review-name">Zara Ali</div>
+          <div class="review-loc">📍 Faisalabad</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO ORDER -->
+<section class="how">
+  <span class="section-label">// HOW IT WORKS</span>
+  <h2 class="section-title">ORDER IN<br>3 STEPS</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div>
+        <h3>Pick Your Watch</h3>
+        <p>Browse our collection above. Found one you like? Note the name or take a screenshot.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div>
+        <h3>DM Us on Instagram</h3>
+        <p>Head to @watchwonders2026 on Instagram. Send us the watch name + your delivery address.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div>
+        <h3>Receive & Love It</h3>
+        <p>We process your order and ship it fast. Pay on delivery — no upfront payment needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM CTA -->
+<section class="ig-cta">
+  <h2>FOLLOW FOR<br><span style="background: linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045); -webkit-background-clip:text; -webkit-text-fill-color:transparent">DAILY DROPS</span></h2>
+  <p>New watches every week. Flash sales. Exclusive deals. Don't miss out — follow us now.</p>
+  <a href="https://www.instagram.com/watchwonders2026/" target="_blank" class="btn-ig-big">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+    @watchwonders2026
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">Watch<span>Wonder</span></a>
+      <p>Pakistan's best source for premium watches at unbeatable prices. Follow us on Instagram for the latest drops and exclusive deals.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#products">All Watches</a></li>
+        <li><a href="#products">Sport Watches</a></li>
+        <li><a href="#products">Luxury Watches</a></li>
+        <li><a href="#products">Casual Watches</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Info</h4>
+      <ul>
+        <li><a href="https://www.instagram.com/watchwonders2026/" target="_blank">Instagram</a></li>
+        <li><a href="#how">How to Order</a></li>
+        <li><a href="#why">Why Us</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Watch Wonder. Made with 🖤 for Pakistan.</span>
+    <span>@watchwonders2026</span>
+  </div>
+</footer>
+
+<!-- FLOATING IG BUTTON -->
+<a href="https://www.instagram.com/watchwonders2026/" target="_blank" class="float-ig" title="Order on Instagram">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+</a>
+
+<!-- TOAST -->
+<div class="toast" id="toast">❤️ Added to wishlist!</div>
+
+<script>
+  // Filter tabs
+  function filterTab(el, cat) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.card').forEach(c => {
+      if (cat === 'all' || c.dataset.cat === cat) {
+        c.style.display = '';
+        c.style.animation = 'fadeUp .4s ease both';
+      } else {
+        c.style.display = 'none';
+      }
+    });
+  }
+
+  // Wishlist toggle
+  function toggleWish(btn) {
+    btn.classList.toggle('liked');
+    btn.textContent = btn.classList.contains('liked') ? '❤️' : '🤍';
+    if (btn.classList.contains('liked')) showToast('❤️ Added to wishlist!');
+    else showToast('💔 Removed from wishlist');
+  }
+
+  // Toast
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card, .why-card, .review-card, .step').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity .6s ease, transform .6s ease';
+    io.observe(el);
+  });
+</script>
+</body>
+</html>
