@@ -1200,42 +1200,31 @@
 <div class="toast" id="toast">❤️ Added to wishlist!</div>
 
 <script>
-  // ════════════════════════════════════════════════════════════
-  //  ⚙️  CONFIGURATION — paste your Google Sheet ID below
-  //  How to find it: open your sheet → the URL looks like:
-  //  https://docs.google.com/spreadsheets/d/SHEET_ID/edit
-  //  Copy only the SHEET_ID part and paste it below.
-  //
-  //  Also make sure the sheet is shared as:
-  //  "Anyone with the link" → "Viewer"
-  // ════════════════════════════════════════════════════════════
-  const SHEET_ID = '1bz5uIP5MxherLwdu4z0wr97E14lPKeevSty0OtKqbyk';
-  const SHEET_GID = '71648206'; // your specific sheet tab
+  // ── CONFIG ──────────────────────────────────────────────────
+  const SHEET_ID  = '1bz5uIP5MxherLwdu4z0wr97E14lPKeevSty0OtKqbyk';
+  const SHEET_GID = '71648206';
+  // CSV export URL (works when sheet is shared "Anyone with link → Viewer")
+  const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
 
-  // Column indices (0-based) — matches your sheet:
+  // Column indices (0-based) matching your sheet:
   // Timestamp | Name of Watch | Short Description | Price | After Discount Price | Image
   const COL = { timestamp: 0, name: 1, desc: 2, price: 3, salePrice: 4, images: 5 };
 
-  // ── Extract Google Drive file ID from share URL ──
-  function driveIdToImg(url) {
-    if (!url || !url.trim()) return null;
-    url = url.trim();
-    // formats: /open?id=ID  or  /d/ID/  or  ?id=ID
-    let m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
-    m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (m) return `https://lh3.googleusercontent.com/d/${m[1]}`;
-    return null;
-  }
+  // ── CORS PROXY LIST (tries each in order, same pattern as Student Registry) ──
+  const PROXIES = [
+    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  ];
 
-  // ── Parse CSV properly (handles quoted commas) ──
+  // ── CSV parser (handles quoted commas) ──
   function parseCSV(text) {
     const rows = [];
-    const lines = text.split('\n');
-    for (const line of lines) {
+    for (const line of text.split(/
+?
+/)) {
       if (!line.trim()) continue;
-      const cols = [];
-      let cur = '', inQ = false;
+      const cols = []; let cur = '', inQ = false;
       for (let i = 0; i < line.length; i++) {
         const ch = line[i];
         if (ch === '"') { inQ = !inQ; }
@@ -1248,62 +1237,125 @@
     return rows;
   }
 
-  // ── Build a save % badge label ──
+  // ── Extract Google Drive thumbnail URL ──
+  function driveIdToImg(url) {
+    if (!url || !url.trim()) return null;
+    url = url.trim();
+    let m = url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+    if (m) return m[1];
+    m = url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+    if (m) return m[1];
+    return null;
+  }
+
+  // Build avatar html with 3-fallback Drive URL chain (same technique as Student Registry)
+  function avatarHtml(imgField, name) {
+    const id = driveIdToImg(imgField);
+    const fb = `<div class="img-placeholder">⌚</div>`;
+    if (!id) return `<div class="card-gallery">${fb}</div>`;
+    return `
+      <div class="card-gallery">
+        <img
+          src="https://lh3.googleusercontent.com/d/${id}=w600"
+          data-src2="https://drive.google.com/thumbnail?id=${id}&sz=w600"
+          data-src3="https://drive.google.com/uc?export=view&id=${id}"
+          alt="${name}"
+          class="active"
+          onerror="
+            var s2=this.getAttribute('data-src2');
+            var s3=this.getAttribute('data-src3');
+            if(s2&&this.src!==s2){this.src=s2;}
+            else if(s3&&this.src!==s3){this.src=s3;}
+            else{this.parentElement.innerHTML='<div class=\'img-placeholder\'>⌚</div>';}
+          ">
+      </div>`;
+  }
+
+  // Build multi-image gallery with fallback chain per image
+  function galleryHtml(imagesField, name, cardIndex) {
+    const rawUrls = (imagesField || '').split(',').map(u => u.trim()).filter(Boolean);
+    const ids = rawUrls.map(driveIdToImg).filter(Boolean);
+
+    if (ids.length === 0) return `<div class="card-gallery"><div class="img-placeholder">⌚</div></div>`;
+
+    if (ids.length === 1) return avatarHtml(rawUrls[0], name);
+
+    const imgs = ids.map((id, i) => `
+      <img
+        src="https://lh3.googleusercontent.com/d/${id}=w600"
+        data-src2="https://drive.google.com/thumbnail?id=${id}&sz=w600"
+        data-src3="https://drive.google.com/uc?export=view&id=${id}"
+        alt="${name} ${i+1}"
+        class="${i===0?'active':''}"
+        onerror="
+          var s2=this.getAttribute('data-src2');
+          var s3=this.getAttribute('data-src3');
+          if(s2&&this.src!==s2){this.src=s2;}
+          else if(s3&&this.src!==s3){this.src=s3;}
+          else{this.style.display='none';}
+        ">`).join('');
+
+    const dots = ids.map((_, i) =>
+      `<button class="gallery-dot ${i===0?'active':''}" onclick="gallerySlideTo(this,${i})"></button>`
+    ).join('');
+
+    return `
+      <div class="card-gallery" id="gallery-${cardIndex}">
+        ${imgs}
+        <button class="gallery-nav gallery-prev" onclick="galleryMove(${cardIndex},-1)">&#8249;</button>
+        <button class="gallery-nav gallery-next" onclick="galleryMove(${cardIndex}, 1)">&#8250;</button>
+        <div class="gallery-dots">${dots}</div>
+      </div>`;
+  }
+
+  // ── Gallery controls ──
+  function galleryMove(index, dir) {
+    const gallery = document.getElementById(`gallery-${index}`);
+    if (!gallery) return;
+    const imgs = [...gallery.querySelectorAll('img')];
+    const dots = [...gallery.querySelectorAll('.gallery-dot')];
+    const cur  = imgs.findIndex(i => i.classList.contains('active'));
+    const next = (cur + dir + imgs.length) % imgs.length;
+    imgs[cur].classList.remove('active'); imgs[next].classList.add('active');
+    dots[cur].classList.remove('active'); dots[next].classList.add('active');
+  }
+
+  function gallerySlideTo(dotEl, idx) {
+    const gallery = dotEl.closest('.card-gallery');
+    const imgs = [...gallery.querySelectorAll('img')];
+    const dots = [...gallery.querySelectorAll('.gallery-dot')];
+    imgs.forEach((im, i) => im.classList.toggle('active', i === idx));
+    dots.forEach((d,  i) => d.classList.toggle('active',  i === idx));
+  }
+
+  // ── Save % badge ──
   function savePct(orig, sale) {
     const o = parseFloat(orig), s = parseFloat(sale);
-    if (!o || !s) return null;
+    if (!o || !s || o <= s) return null;
     return `SAVE ${Math.round((1 - s/o)*100)}%`;
   }
 
-  // ── Badge config (cycle through for variety) ──
+  // ── Badge cycle ──
   const BADGES = [
-    { text: '🔥 HOT',      style: 'background:#ff5722' },
-    { text: '✨ NEW',      style: 'background:var(--neon);color:#000' },
-    { text: '💎 PREMIUM',  style: 'background:#7c3aed' },
-    { text: '⚡ FLASH SALE', style: 'background:#ea580c' },
-    { text: '🆕 JUST IN', style: 'background:var(--neon);color:#000' },
+    { text: '🔥 HOT',         style: 'background:#ff5722' },
+    { text: '✨ NEW',         style: 'background:var(--neon);color:#000' },
+    { text: '💎 PREMIUM',     style: 'background:#7c3aed' },
+    { text: '⚡ FLASH SALE',  style: 'background:#ea580c' },
+    { text: '🆕 JUST IN',    style: 'background:var(--neon);color:#000' },
   ];
 
-  // ── Build one product card HTML ──
+  // ── Build one product card ──
   function buildCard(watch, index) {
-    const badge = BADGES[index % BADGES.length];
-    const imgUrls = (watch.images || '').split(',').map(u => driveIdToImg(u.trim())).filter(Boolean);
-    const pct = savePct(watch.price, watch.salePrice);
-    const origFmt = watch.price ? `Rs ${Number(watch.price).toLocaleString()}` : '';
+    const badge   = BADGES[index % BADGES.length];
+    const pct     = savePct(watch.price, watch.salePrice);
+    const origFmt = watch.price     ? `Rs ${Number(watch.price).toLocaleString()}`     : '';
     const saleFmt = watch.salePrice ? `Rs ${Number(watch.salePrice).toLocaleString()}` : origFmt;
 
-    // Image section
-    let imgHtml = '';
-    if (imgUrls.length === 0) {
-      imgHtml = `<div class="card-gallery"><div class="img-placeholder">⌚</div></div>`;
-    } else if (imgUrls.length === 1) {
-      imgHtml = `
-        <div class="card-gallery">
-          <img src="${imgUrls[0]}" alt="${watch.name}" class="active"
-               onerror="this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>⌚</div>'">
-        </div>`;
-    } else {
-      const imgs = imgUrls.map((u, i) =>
-        `<img src="${u}" alt="${watch.name} ${i+1}" class="${i===0?'active':''}"
-              onerror="this.style.display='none'">`
-      ).join('');
-      const dots = imgUrls.map((_, i) =>
-        `<button class="gallery-dot ${i===0?'active':''}" onclick="gallerySlideTo(this,${i})"></button>`
-      ).join('');
-      imgHtml = `
-        <div class="card-gallery" id="gallery-${index}">
-          ${imgs}
-          <button class="gallery-nav gallery-prev" onclick="galleryMove(${index},-1)">‹</button>
-          <button class="gallery-nav gallery-next" onclick="galleryMove(${index},1)">›</button>
-          <div class="gallery-dots">${dots}</div>
-        </div>`;
-    }
-
     return `
-      <div class="card" data-cat="all" data-index="${index}"
+      <div class="card" data-index="${index}"
            style="opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease">
         <span class="card-badge" style="${badge.style}">${badge.text}</span>
-        ${imgHtml}
+        ${galleryHtml(watch.images, watch.name, index)}
         <div class="card-body">
           <div class="card-brand">WATCH WONDER</div>
           <div class="card-name">${watch.name || 'Premium Watch'}</div>
@@ -1325,42 +1377,18 @@
       </div>`;
   }
 
-  // ── Gallery controls ──
-  function galleryMove(index, dir) {
-    const gallery = document.getElementById(`gallery-${index}`);
-    if (!gallery) return;
-    const imgs = [...gallery.querySelectorAll('img')];
-    const dots = [...gallery.querySelectorAll('.gallery-dot')];
-    const cur = imgs.findIndex(i => i.classList.contains('active'));
-    const next = (cur + dir + imgs.length) % imgs.length;
-    imgs[cur].classList.remove('active'); imgs[next].classList.add('active');
-    dots[cur].classList.remove('active'); dots[next].classList.add('active');
-  }
-
-  function gallerySlideTo(dotEl, idx) {
-    const gallery = dotEl.closest('.card-gallery');
-    const imgs = [...gallery.querySelectorAll('img')];
-    const dots = [...gallery.querySelectorAll('.gallery-dot')];
-    imgs.forEach((im, i) => im.classList.toggle('active', i === idx));
-    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-  }
-
-  // ── Render cards into DOM ──
+  // ── Render all cards ──
   function renderWatches(watches) {
     const grid = document.getElementById('productsGrid');
     grid.innerHTML = watches.map((w, i) => buildCard(w, i)).join('');
-
-    // Scroll reveal on new cards
+    // Staggered reveal
     grid.querySelectorAll('.card').forEach((el, i) => {
-      setTimeout(() => {
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      }, i * 100);
+      setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, i * 120);
     });
   }
 
-  // ── Fetch from Google Sheets via Visualization API (no CORS issues) ──
-  function loadFromSheet() {
+  // ── Main loader — tries multiple CORS proxies ──
+  async function loadFromSheet() {
     const loading = document.getElementById('productsLoading');
     const errBox  = document.getElementById('productsError');
     const grid    = document.getElementById('productsGrid');
@@ -1369,90 +1397,59 @@
     errBox.style.display  = 'none';
     grid.style.display    = 'none';
 
-    // Use Google Visualization Query API — works cross-origin without CORS errors
-    const callbackName = 'gSheetCallback_' + Date.now();
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*&gid=${SHEET_GID}&callback=${callbackName}`;
+    let csv = null;
 
-    // Timeout if sheet never responds
-    const timer = setTimeout(() => {
-      cleanup();
-      loading.style.display = 'none';
-      errBox.style.display  = 'block';
-      document.getElementById('errorDetail').textContent = 'Error: Request timed out. Is the sheet public?';
-    }, 10000);
-
-    function cleanup() {
-      clearTimeout(timer);
-      delete window[callbackName];
-      const s = document.getElementById('gsheet-script');
-      if (s) s.remove();
+    for (const proxyFn of PROXIES) {
+      try {
+        const ctrl = new AbortController();
+        const t    = setTimeout(() => ctrl.abort(), 9000);
+        const res  = await fetch(proxyFn(CSV_URL), { signal: ctrl.signal });
+        clearTimeout(t);
+        if (res.ok) {
+          const txt = await res.text();
+          if (txt && txt.length > 30) { csv = txt; break; }
+        }
+      } catch(e) { /* try next proxy */ }
     }
 
-    window[callbackName] = function(raw) {
-      cleanup();
-      try {
-        const table = raw.table;
-        if (!table || !table.rows || table.rows.length === 0) {
-          throw new Error('Sheet is empty or not accessible');
-        }
-
-        // Parse rows — each cell has a .v (value) and .f (formatted)
-        const watches = table.rows.map(row => {
-          const c = row.c || [];
-          const get = (i) => (c[i] && (c[i].f || c[i].v) != null) ? String(c[i].f || c[i].v).trim() : '';
-          return {
-            name:      get(COL.name),
-            desc:      get(COL.desc),
-            price:     get(COL.price).replace(/[^0-9.]/g, ''),
-            salePrice: get(COL.salePrice).replace(/[^0-9.]/g, ''),
-            images:    get(COL.images),
-          };
-        }).filter(w => w.name);
-
-        if (watches.length === 0) throw new Error('No watch rows found');
-
-        loading.style.display = 'none';
-        grid.style.display    = '';
-        renderWatches(watches);
-        initScrollReveal();
-
-      } catch(err) {
-        loading.style.display = 'none';
-        errBox.style.display  = 'block';
-        document.getElementById('errorDetail').textContent = 'Error: ' + err.message;
-      }
-    };
-
-    // Inject script tag to trigger JSONP call
-    const s = document.createElement('script');
-    s.id  = 'gsheet-script';
-    s.src = url;
-    s.onerror = () => {
-      cleanup();
+    if (!csv) {
       loading.style.display = 'none';
       errBox.style.display  = 'block';
-      document.getElementById('errorDetail').textContent = 'Error: Could not reach Google Sheets. Make sure sharing is set to Anyone with the link → Viewer.';
-    };
-    document.head.appendChild(s);
-  }
+      document.getElementById('errorDetail').textContent =
+        'All proxies failed. Make sure the sheet is shared: Anyone with the link → Viewer';
+      return;
+    }
 
-  // ── Show config help when Sheet ID not set ──
-  function showConfigHelp() {
-    const loading = document.getElementById('productsLoading');
-    const grid    = document.getElementById('productsGrid');
-    loading.innerHTML = `
-      <div class="sheet-config" style="max-width:520px;margin:0 auto;text-align:left">
-        <p style="color:var(--neon);font-weight:700;margin-bottom:10px;font-size:.9rem">⚙️ One-time Setup Required</p>
-        <p style="margin-bottom:12px">To load watches from your Google Sheet, do these 2 things:</p>
-        <p style="margin-bottom:8px"><strong>1. Make sheet public:</strong><br>
-          In your Google Sheet → <code>Share</code> → <code>Anyone with the link</code> → <code>Viewer</code></p>
-        <p style="margin-bottom:8px"><strong>2. Add your Sheet ID:</strong><br>
-          Open this HTML file, find <code>const SHEET_ID = 'YOUR_SHEET_ID_HERE'</code> and replace <code>YOUR_SHEET_ID_HERE</code> with the ID from your sheet URL.</p>
-        <p style="margin-bottom:8px;margin-top:12px">Your sheet URL looks like:<br>
-          <code>https://docs.google.com/spreadsheets/d/<strong style="color:var(--neon)">THIS_IS_YOUR_ID</strong>/edit</code></p>
-        <p style="color:var(--muted);font-size:.75rem;margin-top:12px">Your sheet columns should be in order:<br>
-          <code>Timestamp | Name | Description | Price | Sale Price | Image URL(s)</code></p>
-      </div>`;
+    const rows    = parseCSV(csv);
+    if (rows.length < 2) {
+      loading.style.display = 'none';
+      errBox.style.display  = 'block';
+      document.getElementById('errorDetail').textContent = 'Sheet appears empty.';
+      return;
+    }
+
+    // Skip header row (row 0)
+    const watches = rows.slice(1)
+      .filter(r => r.length >= 2 && r[COL.name])
+      .map(r => ({
+        name:      (r[COL.name]      || '').trim(),
+        desc:      (r[COL.desc]      || '').trim(),
+        price:     (r[COL.price]     || '').replace(/[^0-9.]/g, ''),
+        salePrice: (r[COL.salePrice] || '').replace(/[^0-9.]/g, ''),
+        images:    (r[COL.images]    || '').trim(),
+      }));
+
+    if (watches.length === 0) {
+      loading.style.display = 'none';
+      errBox.style.display  = 'block';
+      document.getElementById('errorDetail').textContent = 'No watch rows found in sheet.';
+      return;
+    }
+
+    loading.style.display = 'none';
+    grid.style.display    = '';
+    renderWatches(watches);
+    initScrollReveal();
   }
 
   // ── Filter tabs ──
@@ -1460,13 +1457,11 @@
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
     document.querySelectorAll('#productsGrid .card').forEach(c => {
-      const show = cat === 'all' || c.dataset.cat === cat;
-      c.style.display = show ? '' : 'none';
-      if (show) { c.style.opacity='1'; c.style.transform='translateY(0)'; }
+      c.style.display = (cat === 'all') ? '' : 'none';
     });
   }
 
-  // ── Wishlist toggle ──
+  // ── Wishlist ──
   function toggleWish(btn) {
     btn.classList.toggle('liked');
     btn.textContent = btn.classList.contains('liked') ? '❤️' : '🤍';
@@ -1491,7 +1486,6 @@
         }
       });
     }, { threshold: 0.1 });
-
     document.querySelectorAll('.why-card, .review-card, .step').forEach(el => {
       el.style.opacity = '0';
       el.style.transform = 'translateY(24px)';
