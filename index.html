@@ -1218,9 +1218,7 @@
   // ── CSV parser (handles quoted commas) ──
   function parseCSV(text) {
     const rows = [];
-    for (const line of text.split(/
-?
-/)) {
+    for (const line of text.split('\n')) {
       if (!line.trim()) continue;
       const cols = []; let cur = '', inQ = false;
       for (let i = 0; i < line.length; i++) {
