@@ -1201,10 +1201,8 @@
 
 <script>
   // ── CONFIG ──────────────────────────────────────────────────
-  const SHEET_ID  = '1bz5uIP5MxherLwdu4z0wr97E14lPKeevSty0OtKqbyk';
-  const SHEET_GID = '71648206';
-  // CSV export URL (works when sheet is shared "Anyone with link → Viewer")
-  const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
+  // Direct published CSV URL from File → Share → Publish to web
+  const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQVzkwPPJCaKjgA8dgpazO5nDKQw92Gy3uBMoQp21V8NQtMcrvd2UfWp8GziyhnP3n_G1oPn5Y_Odit/pub?output=csv';
 
   // Column indices (0-based) matching your sheet:
   // Timestamp | Name of Watch | Short Description | Price | After Discount Price | Image
@@ -1249,10 +1247,25 @@
   }
 
   // Build avatar html with 3-fallback Drive URL chain (same technique as Student Registry)
+  // Called from img onerror — tries next Drive URL format, then shows placeholder
+  function imgFallback(el) {
+    var s2 = el.getAttribute('data-src2');
+    var s3 = el.getAttribute('data-src3');
+    if (s2 && el.src !== s2) { el.src = s2; return; }
+    if (s3 && el.src !== s3) { el.src = s3; return; }
+    el.parentElement.innerHTML = '<div class="img-placeholder">⌚</div>';
+  }
+  function imgFallbackHide(el) {
+    var s2 = el.getAttribute('data-src2');
+    var s3 = el.getAttribute('data-src3');
+    if (s2 && el.src !== s2) { el.src = s2; return; }
+    if (s3 && el.src !== s3) { el.src = s3; return; }
+    el.style.display = 'none';
+  }
+
   function avatarHtml(imgField, name) {
     const id = driveIdToImg(imgField);
-    const fb = `<div class="img-placeholder">⌚</div>`;
-    if (!id) return `<div class="card-gallery">${fb}</div>`;
+    if (!id) return `<div class="card-gallery"><div class="img-placeholder">⌚</div></div>`;
     return `
       <div class="card-gallery">
         <img
@@ -1261,13 +1274,7 @@
           data-src3="https://drive.google.com/uc?export=view&id=${id}"
           alt="${name}"
           class="active"
-          onerror="
-            var s2=this.getAttribute('data-src2');
-            var s3=this.getAttribute('data-src3');
-            if(s2&&this.src!==s2){this.src=s2;}
-            else if(s3&&this.src!==s3){this.src=s3;}
-            else{this.parentElement.innerHTML='<div class=\'img-placeholder\'>⌚</div>';}
-          ">
+          onerror="imgFallback(this)">
       </div>`;
   }
 
@@ -1287,13 +1294,7 @@
         data-src3="https://drive.google.com/uc?export=view&id=${id}"
         alt="${name} ${i+1}"
         class="${i===0?'active':''}"
-        onerror="
-          var s2=this.getAttribute('data-src2');
-          var s3=this.getAttribute('data-src3');
-          if(s2&&this.src!==s2){this.src=s2;}
-          else if(s3&&this.src!==s3){this.src=s3;}
-          else{this.style.display='none';}
-        ">`).join('');
+        onerror="imgFallbackHide(this)">`).join('');
 
     const dots = ids.map((_, i) =>
       `<button class="gallery-dot ${i===0?'active':''}" onclick="gallerySlideTo(this,${i})"></button>`
